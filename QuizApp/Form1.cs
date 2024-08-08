@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AxWMPLib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
+using WMPLib;
 
 
 namespace QuizApp
@@ -19,8 +21,8 @@ namespace QuizApp
         private int currentQuestionIndex;
         //現在のクイズ番号示す値
         QuizListManager quizListManager;
-        private MediaPlayer mediaPlayerT;
-        private MediaPlayer mediaPlayerF;
+        private AxWindowsMediaPlayer mediaPlayerT;
+        private AxWindowsMediaPlayer mediaPlayerF;
 
 
         public Form1()
@@ -72,14 +74,15 @@ namespace QuizApp
         private void InitializeMediaPlayer()
         {
             //正解音
-            mediaPlayerT = new MediaPlayer();
-            Uri soundUriT = new Uri("TrueAnswer.mp3", UriKind.Relative);
-            mediaPlayerT.Open(soundUriT);
-            
+            mediaPlayerT = new AxWindowsMediaPlayer();
+            mediaPlayerT.CreateControl();
+            mediaPlayerT.URL = "fanfare.mp3";
+
             //不正解音
-            mediaPlayerF = new MediaPlayer();
-            Uri soundUriF = new Uri("FalseAnswer.mp3", UriKind.Relative);
-            mediaPlayerF.Open(soundUriF);
+            mediaPlayerF = new AxWindowsMediaPlayer();
+            mediaPlayerF.CreateControl();
+            mediaPlayerF.URL = "fanfare.mp3";
+
         }
 
         private void DisplayOptions(string[] options)
@@ -113,16 +116,15 @@ namespace QuizApp
             {
                 resultLabel.Text = "正解！";
                 // 再生前にメディアプレイヤーの位置をリセットする
-                mediaPlayerT.Position = TimeSpan.Zero;
-                mediaPlayerT.Play();
+                mediaPlayerT.Ctlcontrols.play();
 
             }
             else
             {
                 resultLabel.Text = "不正解。正しい答えは：" + question.Options[question.CorrectOption];
                 //間違っていれば四択配列から回答番目の要素を取り出して表示する
-                mediaPlayerF.Position = TimeSpan.Zero;
-                mediaPlayerF.Play();
+                mediaPlayerT.Ctlcontrols.play();
+
             }
 
             currentQuestionIndex++;
@@ -183,7 +185,7 @@ namespace QuizApp
             Options = options;
             CorrectOption = correctOption;
         }
-        
+
 
     }
 
